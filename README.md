@@ -16,4 +16,4 @@ Durante la ejecución de 50 épocas, se observó lo siguiente:
 
 ## Estructura del Repositorio
 - `src/pipeline_base.py`: Contiene el ciclo de vida completo del modelo (creación, dataloaders, loop de entrenamiento y loop de validación).
-- `requirements.txt`: Dependencias necesarias (`torch`, `numpy`, `scikit-learn`).
+- `requirements.txt`: Dependencias necesarias (`torch`, `numpy`, `scikit-learn`, `pandas`, `openpyxl`).
