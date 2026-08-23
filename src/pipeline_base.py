@@ -5,6 +5,7 @@ from torch.utils.data import Dataset, DataLoader
 import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
+import pandas as pd
 
 # 1. Configuración del Dispositivo y Semillas (Reproducibilidad)
 torch.manual_seed(42)
@@ -13,19 +14,24 @@ np.random.seed(42)
 device = torch.device("cuda" if torch.cuda.is_available() else "mps" if torch.backends.mps.is_available() else "cpu")
 print(f"Usando dispositivo: {device}")
 
-# 2. Generación de Dataset Sintético (Gobernanza Migratoria)
-# Reemplazar luego con pandas: pd.read_csv('../data/tu_dataset.csv')
-def generar_datos_sinteticos(n_samples=1000):
-    # Variables: Calidad Institucional, Tasa Pobreza %, Rendimiento Económico
-    X = np.random.randn(n_samples, 3) 
-    
-    # Lógica de clasificación: Alta pobreza y baja calidad institucional -> Alto flujo (1)
-    ruido = np.random.randn(n_samples) * 0.5
-    y = (X[:, 1] - X[:, 0] + X[:, 2] + ruido > 0).astype(int)
-    return X, y
+# 2. Carga de Dataset Real (Gobernanza Migratoria)
+ruta_archivo = 'data/Dataset_Migracion.xlsx'
+# Carga solo la hoja específica indicando su nombre
+df = pd.read_excel(ruta_archivo, sheet_name='Datos_Migratorios') 
 
-X_full, y_full = generar_datos_sinteticos()
-X_train, X_val, y_train, y_val = train_test_split(X_full, y_full, test_size=0.2, random_state=42)
+# Calculamos la mediana de la columna
+umbral = df['Tasa_Migración_Neta'].median()
+
+# Creamos una nueva columna: True (1) si es mayor a la mediana, False (0) si no
+df['flujo_migratorio_alto'] = (df['Tasa_Migración_Neta'] > umbral).astype(int)
+
+# Selecciona las columnas exactas que usarás como características (X)
+columnas_features = ['Índice_Corrupción_(IPC_0-100)', 'Tasa_Pobreza_(%)', 'PIB_per_Cápita_(USD PPA)', 'Tasa_Desempleo_(%)', 'IDH_País'] 
+X_full = df[columnas_features].values
+
+# Selecciona tu variable objetivo (y). 
+columna_target = 'flujo_migratorio_alto' 
+y_full = df[columna_target].values
 
 # 3. Definición del Dataset para PyTorch
 class MigracionDataset(Dataset):
@@ -58,7 +64,7 @@ class MLPClasificador(nn.Module):
     def forward(self, x):
         return self.red(x)
 
-modelo = MLPClasificador(input_size=3).to(device)
+modelo = MLPClasificador(input_size=5).to(device)
 
 # 5. Pipeline de Entrenamiento y Validación
 criterion = nn.BCELoss()
