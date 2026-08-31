@@ -1,5 +1,5 @@
-# Ignorar la carpeta de datasets (¡Muy importante en Data Science!)
-data/
+# Ignorar el contenido de la carpeta de datasets, pero no la carpeta en sí
+data/*
 
 # Ignorar archivos temporales de Python y entornos virtuales
 __pycache__/
@@ -7,3 +7,10 @@ __pycache__/
 .env
 venv/
 env/
+
+# Ignorar archivos de datos pesados en cualquier lugar del proyecto
+*.csv
+*.xlsx
+
+# Pero NO ignorar el archivo .gitkeep
+!data/.gitkeep

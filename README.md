@@ -1,3 +1,13 @@
+## 📁 Reproducibilidad y Datos (Carpeta `data/`)
+
+Por políticas de versionado y límites de almacenamiento de GitHub, los archivos CSV originales no se incluyen en este repositorio. 
+
+Para ejecutar el pipeline localmente, el evaluador debe:
+1. Contar con los archivos originales `ag_news_train.csv` y `ag_news_test.csv` y el `Dataset_Migracion.xlsx`.
+   Los puede descargar en "https://drive.google.com/drive/folders/1CCTF6rG9nCj925k1U6Ki4QxQmWOL6hVD?usp=sharing"
+2. Colocarlos directamente dentro de la carpeta `data/` de este proyecto.
+3. Ejecutar los notebooks de forma secuencial.
+
 # Checkpoint 1: Pipeline Base de Deep Learning
 
 Este repositorio contiene la infraestructura inicial para el entrenamiento y validación de una Red Neuronal Artificial (MLP) desarrollada en PyTorch. El modelo base clasifica datos relacionados con flujos migratorios, evaluando el impacto de la gobernanza y tasas de pobreza.
