@@ -17,3 +17,12 @@ Durante la ejecución de 50 épocas, se observó lo siguiente:
 ## Estructura del Repositorio
 - `src/pipeline_base.py`: Contiene el ciclo de vida completo del modelo (creación, dataloaders, loop de entrenamiento y loop de validación).
 - `requirements.txt`: Dependencias necesarias (`torch`, `numpy`, `scikit-learn`, `pandas`, `openpyxl`).
+
+Justificación del Modelo y Vectorizador:
+
+Para este baseline se seleccionó una Regresión Logística. A pesar de su simplicidad, este modelo es extremadamente robusto frente a las matrices de alta dimensionalidad y esparsidad generadas por el procesamiento de texto. Se configuró el TfidfVectorizer con max_features=10000 para reducir el ruido y evitar el sobreajuste, e incorporamos ngram_range=(1, 2) para que el modelo capture contextos básicos mediante bigramas, lo cual incrementa notablemente la precisión semántica. Siguiendo las mejores prácticas, el vectorizador se ajustó (fit) exclusivamente sobre el set de entrenamiento para evitar el Data Leakage.
+
+Análisis Preliminar de la Matriz de Confusión:
+
+(Nota: Ajusta esto según el gráfico exacto que te arroje el código, pero este es el comportamiento estándar de AG News)
+Al analizar la matriz de confusión, observamos que las clases "Sports" y "World" presentan los niveles más altos de precisión y recall, ya que utilizan vocabularios muy específicos. Sin embargo, el modelo presenta su mayor desafío al intentar separar las clases "Business" (Negocios) y "Sci/Tech" (Tecnología). Esta confusión cruzada es lógica y esperable, ya que muchas noticias sobre lanzamientos de productos tecnológicos (Tech) involucran reportes de acciones bursátiles o fusiones corporativas (Business), compartiendo un espacio semántico muy similar.

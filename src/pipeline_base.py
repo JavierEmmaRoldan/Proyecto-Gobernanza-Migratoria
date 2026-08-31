@@ -6,6 +6,7 @@ import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 import pandas as pd
+from sklearn.model_selection import train_test_split
 
 # 1. Configuración del Dispositivo y Semillas (Reproducibilidad)
 torch.manual_seed(42)
@@ -17,7 +18,25 @@ print(f"Usando dispositivo: {device}")
 # 2. Carga de Dataset Real (Gobernanza Migratoria)
 ruta_archivo = 'data/Dataset_Migracion.xlsx'
 # Carga solo la hoja específica indicando su nombre
-df = pd.read_excel(ruta_archivo, sheet_name='Datos_Migratorios') 
+df = pd.read_excel(ruta_archivo, sheet_name='Datos_Migratorios')
+
+# 2. LIMPIEZA DE COLUMNAS (Convertir texto con '%' a números flotantes)
+# Reemplazamos el símbolo '%' y convertimos a número
+df['Tasa_Desempleo_(%)'] = df['Tasa_Desempleo_(%)'].astype(str).str.replace('%', '').astype(float)
+df['Tasa_Pobreza_(%)'] = df['Tasa_Pobreza_(%)'].astype(str).str.replace('%', '').astype(float)
+
+# Corrección de escala: Si el PIB es mayor a 300, significa que se cargó 
+# en dólares absolutos por error, así que lo dividimos por 1000.
+df['PIB_per_Cápita_(USD PPA)'] = df['PIB_per_Cápita_(USD PPA)'].apply(lambda x: x / 1000 if x > 300 else x)
+
+# Corrección del IDH: Si el valor es mayor a 1 (error de tipeo del Vaticano), 
+# lo convertimos al valor máximo lógico que es 1.0
+df['IDH_País'] = df['IDH_País'].apply(lambda x: 1.0 if x > 1 else x)
+
+# Limpieza preventiva de las columnas ocultas
+df['Contr._PIB_Inm._(%)'] = df['Contr._PIB_Inm._(%)'].astype(str).str.replace('%', '').astype(float)
+df['Tasa_Alfabetización_Inm._(%)'] = df['Tasa_Alfabetización_Inm._(%)'].astype(str).str.replace('%', '').astype(float)
+df['Gasto_Educ._(%_PIB)'] = df['Gasto_Educ._(%_PIB)'].astype(str).str.replace('%', '').astype(float)
 
 # Calculamos la mediana de la columna
 umbral = df['Tasa_Migración_Neta'].median()
@@ -32,6 +51,9 @@ X_full = df[columnas_features].values
 # Selecciona tu variable objetivo (y). 
 columna_target = 'flujo_migratorio_alto' 
 y_full = df[columna_target].values
+
+# División de los datos en Entrenamiento (80%) y Validación (20%)
+X_train, X_val, y_train, y_val = train_test_split(X_full, y_full, test_size=0.2, random_state=42)
 
 # 3. Definición del Dataset para PyTorch
 class MigracionDataset(Dataset):
