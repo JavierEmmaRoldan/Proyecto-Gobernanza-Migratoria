@@ -14,3 +14,13 @@ env/
 
 # Pero NO ignorar el archivo .gitkeep
 !data/.gitkeep
+
+# Ignorar autoguardados de Jupyter Notebook
+.ipynb_checkpoints/
+
+# Ignorar carpetas de resultados y pesos de modelos de Hugging Face
+lora_ag_news/
+resultados_hf/
+checkpoint-*/
+*.safetensors
+*.bin
