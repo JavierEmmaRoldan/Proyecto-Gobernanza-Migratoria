@@ -1,6 +1,16 @@
-torch
-numpy
-scikit-learn
+# Manipulación de Datos
 pandas
-xlrd
+numpy
 openpyxl
+
+# Machine Learning Clásico
+scikit-learn
+matplotlib
+seaborn
+
+# Deep Learning y NLP (PyTorch y Hugging Face)
+torch
+transformers
+datasets
+peft
+evaluate
